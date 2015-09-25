@@ -9,6 +9,12 @@ var data;
 var videoCanvas;
 var debugCanvas, debugContext;
 
+var webcamOnOffButton;
+var numberOfPrintersSelector;
+var sizeOfBoxSelector;
+var selectPositionsButton;
+var resetPositionsButton;
+
 var numberOfPrinters = 3;
 var sizeOfBox = 40;
 var isBeingSelected = 0;
@@ -19,6 +25,7 @@ initialize();
 
 function initialize() {
 
+    // webcam stuff
     videoCanvas = document.getElementById('webcamDiv');
     debugCanvas = document.getElementById('canvasDiv');
     debugContext = debugCanvas.getContext("2d");
@@ -39,7 +46,32 @@ function initialize() {
     });
     Webcam.attach( '#webcamDiv' );
 
+    // button and div stuff
+    // webcamOnOffButton = document.getElementById('webcamOnOffButton');
+    numberOfPrintersSelector = document.getElementById('numberOfPrintersSelector');
+    sizeOfBoxSelector = document.getElementById('sizeOfBoxSelector');
+    // selectPositionsButton = document.getElementById('selectPositionsButton');
+    // resetPositionsButton = document.getElementById('resetPositionsButton');
+
 }
+
+// hook up buttons
+document.getElementById("webcamOnOffButton").addEventListener("click", function(){
+    startTimer();
+});
+
+document.getElementById("selectPositionsButton").addEventListener("click", function(){
+
+});
+
+document.getElementById("resetPositionsButton").addEventListener("click", function(){
+
+});
+
+// hook up input divs
+
+
+
 
 function timedCount() {
     snapshot();
@@ -82,6 +114,9 @@ function snapshot() {
 //     debugContext.putImageData(data,0,0);
 //
 // }
+
+
+
 
 
 
