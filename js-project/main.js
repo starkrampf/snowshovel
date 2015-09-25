@@ -26,6 +26,9 @@ initialize();
 
 function initialize() {
 
+    // hide debugPanel
+    $("#debugPanel").toggleClass('hidden');
+
     // webcam stuff
     webcamDiv = document.getElementById('webcamDiv');
     debugCanvas = document.getElementById('debugCanvas');
@@ -76,6 +79,7 @@ document.getElementById("selectPositionsButton").addEventListener("click", funct
 
 document.getElementById("resetPositionsButton").addEventListener("click", function(){
     selectPositionText.innerHTML = "resetPositionsButton";
+    togglePanel();
 });
 
 // hook up input divs
@@ -177,8 +181,7 @@ function drawDot(context, rad, xPos, yPos, color) {
 }
 
 
-function toggleDebug() {
+function togglePanel() {
     $("#debugPanel").toggleClass('hidden');
-    $("#cameraPanel").toggleClass('hidden');
-    $("#chartPanel").toggleClass('hidden');
+    $("#webcamPanel").toggleClass('hidden');
 }
