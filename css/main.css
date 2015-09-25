@@ -1,0 +1,38 @@
+
+body {
+    padding-top:30px;
+    padding-left:30px;
+    padding-right:30px;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.navbar-brand {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-brand img {
+    max-height: 100%;
+}
+
+#my_camera, #debugCanvas, #paperCanvas {
+    background: rgb(255, 255, 255);
+}
+
+
+#resultDiv {
+    height: 640px;
+    width: 480px;
+    padding-left:150px;
+    /*text-align: center;*/
+    display:table-cell;
+    vertical-align:middle;
+}
+
+#resultDiv > p {
+    font-family: "Palatino Linotype", Palatino, serif;
+    font-size: 90px;
+}

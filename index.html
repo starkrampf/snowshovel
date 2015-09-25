@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Snowshovel</title>
+
+    <!-- load stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- load libraries and modules -->
+    <script src="js-libraries/jquery-2.1.3.min.js"></script>
+    <script src="js-libraries/bootstrap.min.js"></script>
+    <script src="js-libraries/webcam.js"></script>
+    <script src="js-libraries/paperjs-v0.9.22/dist/paper-core.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="js-libraries/math.min.js"></script>
+
+    <!-- load project code -->
+    <script src="js-project/randomNumbers.js"></script>
+    <script src="js-project/converter.js"></script>
+    <script src="js-project/unique.js"></script>
+    <script src="js-project/charting.js"></script>
+
+</head>
+<body>
+
+
+<!-- top navbar -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- header for logo -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="https://docs.google.com/document/d/13b7kQaM49KdpgP93aBLE16pr1M8WhoawI8n7rqzmfwI/edit#heading=h.l226i53ohkip">
+                <img alt="Brand" src="assets/logo.png">
+            </a>
+        </div>
+        <!-- collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-navbar-collapse">
+            <form class="navbar-form navbar-left">
+
+                <!-- Webcam On/Off function -->
+                <!-- <button type="button" class="btn btn-info" onclick="webcamOnOff()">Webcam On/Off</button> -->
+                <button type="button" class="btn btn-info" id="webcamOnOffButton">Webcam On/Off</button>
+
+                <!-- Printer location setup -->
+                <div class="form-group">
+                  <label for="Printers">Printers: </label>
+                  <select class="form-control" id="numberOfPrintersSelector">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="Box Size">Box Size: </label>
+                  <select class="form-control" id="sizeOfBoxSelector">
+                    <option>30</option>
+                    <option>40</option>
+                    <option>50</option>
+                    <option>60</option>
+                  </select>
+                </div>
+                <button type="button" class="btn btn-default" id="selectPositionsButton">Select Positions</button>
+                <button type="button" class="btn btn-danger" id="resetPositionsButton">Reset</button>
+                <div class="form-group">
+                    <p class="navbar-text" id="selectPositionText">Selecting printers..</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Canvas windows -->
+<div class="row">
+    <div class="col-md-6">
+        <!-- result canvas -->
+        <div class="panel panel-success" id="resultPanel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Webcam</h3>
+            </div>
+            <div class="panel-body">
+                <div id="webcamDiv" style="width:640px; height:480px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!-- debug canvas -->
+        <div class="panel panel-info" id="debugPanel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Canvas</h3>
+            </div>
+            <div class="panel-body">
+                <canvas id='canvasDiv' style="width:640px; height:480px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- bottom navbar -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-navbar-collapse">
+            <form class="navbar-form navbar-left">
+
+              <div class="form-group">
+                  <label for="exampleInputName2"> Directory: </label>
+                  <input type="text" class="form-control" id="inputDirectoryField" placeholder="C:\Snowshovel\">
+              </div>
+
+              <div class="btn-group" role="group" id="action-group" aria-label="control_label">
+                  <!-- <button type="button" class="btn btn-default" onclick="startTimer()">Start Recording</button>
+                  <button type="button" class="btn btn-default" onclick="stopTimer()">Stop Recording</button> -->
+                  <button type="button" class="btn btn-default" id="startRecordingButton">Start Recording</button>
+                  <button type="button" class="btn btn-default" id="stopRecordingButton">Stop Recording</button>
+              </div>
+
+              <div class="form-group">
+                  <p class="navbar-text" id="recordingIndicatorText">REC</p>
+              </div>
+
+              <div class="form-group">
+                  <p class="navbar-text" id="lastSnapTimeText">Last snap: </p>
+              </div>
+            </form>
+
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- run the app -->
+<script src="js-project/imageProcessing.js"></script>
+
+
+</body>
+</html>
