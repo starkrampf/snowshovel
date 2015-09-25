@@ -2,7 +2,7 @@
 // globals
 var width = 640;
 var height = 480;
-var timerMillis = 100;
+var timerMillis = 1000;
 var timer_is_on = 0;
 
 var data;
@@ -70,11 +70,12 @@ document.getElementById("webcamOnOffButton").addEventListener("click", function(
 });
 
 document.getElementById("selectPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "selectPositionsButton"
+    selectPositionText.innerHTML = "selectPositionsButton";
+    snapshot();
 });
 
 document.getElementById("resetPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "resetPositionsButton"
+    selectPositionText.innerHTML = "resetPositionsButton";
 });
 
 // hook up input divs
@@ -117,6 +118,15 @@ function snapshot() {
     // imageContext = imageCanvas.getContext('2d');
     // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
     // processData(data);
+
+    debugContext = debugCanvas.getContext("2d");
+    // draw to canvas...
+    debugCanvas.toBlob(function(blob) {
+
+        saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
+    });
+
+
 }
 
 // function processData(data) {

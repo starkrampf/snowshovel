@@ -15,6 +15,9 @@
     <script src="js-libraries/paperjs-v0.9.22/dist/paper-core.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="js-libraries/math.min.js"></script>
+    <script src="js-libraries/FileSaver/FileSaver.js"></script>
+    <script src="js-libraries/FileSaver/canvas-toBlob.js"></script>
+    <script src="js-libraries/FileSaver/Blob.js"></script>
 
     <!-- load project code -->
     <script src="js-project/randomNumbers.js"></script>
@@ -103,7 +106,7 @@
                 <h3 class="panel-title">Canvas</h3>
             </div>
             <div class="panel-body">
-                <canvas id='debugCanvas' style="width:640px; height:480px;"></canvas>
+                <canvas class="input" id="debugCanvas" width="640" height="480"/>
             </div>
         </div>
     </div>
