@@ -6,7 +6,7 @@ var timerMillis = 100;
 var timer_is_on = 0;
 
 var data;
-var videoCanvas;
+var webcamDiv;
 var debugCanvas, debugContext;
 
 var webcamOnOffButton;
@@ -14,6 +14,7 @@ var numberOfPrintersSelector;
 var sizeOfBoxSelector;
 var selectPositionsButton;
 var resetPositionsButton;
+var selectPositionText;
 
 var numberOfPrinters = 3;
 var sizeOfBox = 40;
@@ -26,8 +27,8 @@ initialize();
 function initialize() {
 
     // webcam stuff
-    videoCanvas = document.getElementById('webcamDiv');
-    debugCanvas = document.getElementById('canvasDiv');
+    webcamDiv = document.getElementById('webcamDiv');
+    debugCanvas = document.getElementById('debugCanvas');
     debugContext = debugCanvas.getContext("2d");
 
     videoCanvas.width = width;
@@ -52,27 +53,35 @@ function initialize() {
     sizeOfBoxSelector = document.getElementById('sizeOfBoxSelector');
     // selectPositionsButton = document.getElementById('selectPositionsButton');
     // resetPositionsButton = document.getElementById('resetPositionsButton');
+    selectPositionText = document.getElementById('selectPositionText');
 
 }
 
 // hook up buttons
+var webcamToggler = 0;
 document.getElementById("webcamOnOffButton").addEventListener("click", function(){
-    startTimer();
+    if(webcamToggler === 1) {
+      stopTimer();
+      webcamToggler = 0;
+    } else {
+      startTimer();
+      webcamToggler = 1;
+    }
 });
 
 document.getElementById("selectPositionsButton").addEventListener("click", function(){
-
+    selectPositionText.innerHTML = "selectPositionsButton"
 });
 
 document.getElementById("resetPositionsButton").addEventListener("click", function(){
-
+    selectPositionText.innerHTML = "resetPositionsButton"
 });
 
 // hook up input divs
 
 
 
-
+// frame loop stuff
 function timedCount() {
     snapshot();
     t = setTimeout(function(){timedCount()}, timerMillis);
@@ -90,16 +99,21 @@ function stopTimer() {
     timer_is_on = 0;
 }
 
+
+// take snapshot and do stuff with it!
 function snapshot() {
 
-  Webcam.snap( function(data_uri, canvas, context) {
-          // copy image to my own canvas
-          debugContext.drawImage( context, 0, 0 );
-      } );
+  // Webcam.snap( function(data_uri, canvas, context) {
+  //         // copy image to my own canvas
+  //         debugContext.drawImage( context, 0, 0 );
+  //     } );
 
+  // Webcam.snap( function(data_uri) {
+  //         document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
+  //     } );
 
-    // // get data and extract raw pixels
-    // Webcam.snap( function() {}, imageCanvas );
+    // get data and extract raw pixels
+    Webcam.snap( function() {}, debugCanvas );
     // imageContext = imageCanvas.getContext('2d');
     // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
     // processData(data);
