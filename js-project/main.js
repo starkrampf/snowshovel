@@ -31,10 +31,10 @@ function initialize() {
     debugCanvas = document.getElementById('debugCanvas');
     debugContext = debugCanvas.getContext("2d");
 
-    videoCanvas.width = width;
-    videoCanvas.height = height;
-    debugCanvas.width = width;
-    debugCanvas.height = height;
+    webcamDiv.width = width;
+    webcamDiv.height = height;
+    webcamDiv.width = width;
+    webcamDiv.height = height;
 
     Webcam.set({
         width: width,
