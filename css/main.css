@@ -22,6 +22,10 @@ body {
     background: rgb(255, 255, 255);
 }*/
 
+#recordingIndicatorText {
+    color: #ee0000;
+}
+
 .inner {
   position: absolute;
 }
