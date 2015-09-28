@@ -1,7 +1,9 @@
 
 // globals
-var width = 640;
-var height = 480;
+var previewWidth = 1920;
+var previewHeight = 1080;
+var outputWidth = 1920;
+var outputHeight = 1080;
 var timerMillis = 1000;
 var timer_is_on = 0;
 
@@ -9,7 +11,6 @@ var data;
 var webcamDiv;
 var debugCanvas, debugContext;
 
-var webcamOnOffButton;
 var numberOfPrintersSelector;
 var sizeOfBoxSelector;
 var selectPositionsButton;
@@ -34,16 +35,16 @@ function initialize() {
     debugCanvas = document.getElementById('debugCanvas');
     debugContext = debugCanvas.getContext("2d");
 
-    webcamDiv.width = width;
-    webcamDiv.height = height;
-    webcamDiv.width = width;
-    webcamDiv.height = height;
+    webcamDiv.width = previewWidth;
+    webcamDiv.height = previewHeight;
+    debugCanvas.width = previewWidth;
+    debugCanvas.height = previewHeight;
 
     Webcam.set({
-        width: width,
-        height: height,
-        dest_width: width,
-        dest_height: height,
+        width: previewWidth,
+        height: previewHeight,
+        dest_width: previewWidth,
+        dest_height: previewHeight,
         image_format: 'png',
         jpeg_quality: 100,
         force_flash: false
@@ -51,36 +52,61 @@ function initialize() {
     Webcam.attach( '#webcamDiv' );
 
     // button and div stuff
-    // webcamOnOffButton = document.getElementById('webcamOnOffButton');
     numberOfPrintersSelector = document.getElementById('numberOfPrintersSelector');
     sizeOfBoxSelector = document.getElementById('sizeOfBoxSelector');
     // selectPositionsButton = document.getElementById('selectPositionsButton');
     // resetPositionsButton = document.getElementById('resetPositionsButton');
     selectPositionText = document.getElementById('selectPositionText');
 
+    // coordinate click event listener
+    debugCanvas.addEventListener("mousedown", clickEvent, false);
+
+}
+
+// get click coordinates
+function clickEvent(event) {
+    var x = event.x;
+    var y = event.y;
+
+    x -= debugCanvas.offsetLeft;
+    y -= debugCanvas.offsetTop;
+
+    // alert("x: " + x + " y: " + y);
+
+    drawCircle(debugContext, 50, x, y, 'green');
+
+}
+
+function drawCircle(context, rad, xPos, yPos, color) {
+    context.beginPath();
+    context.arc(xPos, yPos, rad, 0, 2 * Math.PI, false);
+    context.strokeWidth = 10;
+    context.strokeStyle = color; // 'green' or '#ff003300'
+    context.stroke();
 }
 
 // hook up buttons
-var webcamToggler = 0;
-document.getElementById("webcamOnOffButton").addEventListener("click", function(){
-    if(webcamToggler === 1) {
-      stopTimer();
-      webcamToggler = 0;
-    } else {
-      startTimer();
-      webcamToggler = 1;
-    }
-});
-
 document.getElementById("selectPositionsButton").addEventListener("click", function(){
     selectPositionText.innerHTML = "selectPositionsButton";
-    snapshot();
+    selectPositions();
 });
 
 document.getElementById("resetPositionsButton").addEventListener("click", function(){
     selectPositionText.innerHTML = "resetPositionsButton";
-    togglePanel();
+    resetPositions();
 });
+
+document.getElementById("selectPositionsButton").addEventListener("click", function(){
+    selectPositionText.innerHTML = "startRecordingButton";
+    startTimer();
+});
+
+document.getElementById("resetPositionsButton").addEventListener("click", function(){
+    selectPositionText.innerHTML = "stopRecordingButton";
+    stopTimer();
+});
+
+
 
 // hook up input divs
 
@@ -125,26 +151,31 @@ function snapshot() {
 
     debugContext = debugCanvas.getContext("2d");
     // draw to canvas...
+    var blobOut;
     debugCanvas.toBlob(function(blob) {
-
-        saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
+      blobOut = blob;
     });
 
+    return blobOut;
+}
+
+function selectPositions() {
+
+    var blob = snapshot();
+    saveBlob(blob);
+    togglePanel();  // bring snap to front
 
 }
 
-// function processData(data) {
-//
-//     ////// DEBUG CANVAS DRAWING //////
-//     clearDebugCanvas();
-//
-//     //set the data back
-//     debugContext.putImageData(data,0,0);
-//
-// }
+function resetPositions() {
 
 
+    togglePanel();  // bring webcam to front
+}
 
+function saveBlob(blob) {
+  saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
+}
 
 
 
