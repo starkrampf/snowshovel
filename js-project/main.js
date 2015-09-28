@@ -1,15 +1,25 @@
 
 // globals
-var previewWidth = 1920;
-var previewHeight = 1080;
-var outputWidth = 1920;
-var outputHeight = 1080;
+
+///// these work /////
+// VGA
+// 1280 x 960
+// 1440 x 1080  <-- native?
+// 1600 x 1200
+// 2048 x 1536
+
+
+var previewWidth = 640;
+var previewHeight = 480;
+var outputWidth = 800;
+var outputHeight = 600;
 var timerMillis = 1000;
 var timer_is_on = 0;
 
 var data;
 var webcamDiv;
 var debugCanvas, debugContext;
+var coordinateList = [];
 
 var numberOfPrintersSelector;
 var sizeOfBoxSelector;
@@ -19,7 +29,7 @@ var selectPositionText;
 
 var numberOfPrinters = 3;
 var sizeOfBox = 40;
-var isBeingSelected = 0;
+var isBeingSelected = false;
 
 initialize();
 
@@ -28,7 +38,7 @@ initialize();
 function initialize() {
 
     // hide debugPanel
-    $("#debugPanel").toggleClass('hidden');
+    // $("#debugPanel").toggleClass('hidden');
 
     // webcam stuff
     webcamDiv = document.getElementById('webcamDiv');
@@ -54,55 +64,76 @@ function initialize() {
     // button and div stuff
     numberOfPrintersSelector = document.getElementById('numberOfPrintersSelector');
     sizeOfBoxSelector = document.getElementById('sizeOfBoxSelector');
-    // selectPositionsButton = document.getElementById('selectPositionsButton');
-    // resetPositionsButton = document.getElementById('resetPositionsButton');
     selectPositionText = document.getElementById('selectPositionText');
+    selectPositionText.innerHTML = "select printers"
 
     // coordinate click event listener
     debugCanvas.addEventListener("mousedown", clickEvent, false);
+
+    // enable / disable init
+    $('#resetPositionsButton').prop('disabled', true);
+    $('#startRecordingButton').prop('disabled', true);
+    $('#stopRecordingButton').prop('disabled', true);
+
 
 }
 
 // get click coordinates
 function clickEvent(event) {
-    var x = event.x;
-    var y = event.y;
 
-    x -= debugCanvas.offsetLeft;
-    y -= debugCanvas.offsetTop;
+    if (isBeingSelected === false) {
+      return;
+    }
 
-    // alert("x: " + x + " y: " + y);
+      var x = event.x;
+      var y = event.y;
 
-    drawCircle(debugContext, 50, x, y, 'green');
+      x -= debugCanvas.offsetLeft;
+      y -= debugCanvas.offsetTop;
+
+      // draw rectangle
+      var boxSize = sizeOfBoxSelector.value;
+      debugContext.beginPath();
+      debugContext.lineWidth="3";
+      debugContext.strokeStyle="#FFFF66";
+      debugContext.rect(x-boxSize/2, y-boxSize/2, boxSize, boxSize);
+      debugContext.stroke();
+
+      // save coordinate in global list
+      coordinateList.push({x:x, y:y});
+
+      // display info
+      selectPositionText.innerHTML = "printers selected: " + coordinateList.length + "/" + numberOfPrintersSelector.value;
+
+      // end saving
+      if (coordinateList.length === parseInt(numberOfPrintersSelector.value)) {
+
+        $('#startRecordingButton').prop('disabled', false);
+        $('#stopRecordingButton').prop('disabled', false);
+
+          // ready to record!
+          isBeingSelected = false;
+
+          selectPositionText.innerHTML = "ready to record..";
+      }
 
 }
 
-function drawCircle(context, rad, xPos, yPos, color) {
-    context.beginPath();
-    context.arc(xPos, yPos, rad, 0, 2 * Math.PI, false);
-    context.strokeWidth = 10;
-    context.strokeStyle = color; // 'green' or '#ff003300'
-    context.stroke();
-}
 
 // hook up buttons
 document.getElementById("selectPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "selectPositionsButton";
     selectPositions();
 });
 
 document.getElementById("resetPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "resetPositionsButton";
     resetPositions();
 });
 
-document.getElementById("selectPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "startRecordingButton";
+document.getElementById("startRecordingButton").addEventListener("click", function(){
     startTimer();
 });
 
-document.getElementById("resetPositionsButton").addEventListener("click", function(){
-    selectPositionText.innerHTML = "stopRecordingButton";
+document.getElementById("stopRecordingButton").addEventListener("click", function(){
     stopTimer();
 });
 
@@ -143,35 +174,53 @@ function snapshot() {
   //         document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
   //     } );
 
-    // get data and extract raw pixels
-    Webcam.snap( function() {}, debugCanvas );
-    // imageContext = imageCanvas.getContext('2d');
-    // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
-    // processData(data);
+    // // get data and extract raw pixels
+    // Webcam.snap( function() {}, debugCanvas );
+    // // imageContext = imageCanvas.getContext('2d');
+    // // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
+    // // processData(data);
+    //
+    // debugContext = debugCanvas.getContext("2d");
+    // // draw to canvas...
+    // var blobOut;
+    // debugCanvas.toBlob(function(blob) {
+    //   blobOut = blob;
+    // });
 
-    debugContext = debugCanvas.getContext("2d");
-    // draw to canvas...
-    var blobOut;
-    debugCanvas.toBlob(function(blob) {
-      blobOut = blob;
-    });
-
-    return blobOut;
+    // return blobOut;
 }
 
 function selectPositions() {
+    $('#numberOfPrintersSelector').prop('disabled', true);
+    $('#sizeOfBoxSelector').prop('disabled', true);
+    $('#selectPositionsButton').prop('disabled', true);
+    $('#resetPositionsButton').prop('disabled', false);
+    $('#startRecordingButton').prop('disabled', true);
+    $('#stopRecordingButton').prop('disabled', true);
 
-    var blob = snapshot();
-    saveBlob(blob);
-    togglePanel();  // bring snap to front
-
+    isBeingSelected = true;
+    coordinateList = [];
+    selectPositionText.innerHTML = "select printers"
 }
 
 function resetPositions() {
+  $('#numberOfPrintersSelector').prop('disabled', false);
+  $('#sizeOfBoxSelector').prop('disabled', false);
+  $('#selectPositionsButton').prop('disabled', false);
+  $('#resetPositionsButton').prop('disabled', true);
+  $('#startRecordingButton').prop('disabled', true);
+  $('#stopRecordingButton').prop('disabled', true);
 
-
-    togglePanel();  // bring webcam to front
+  isBeingSelected = false;
+  coordinateList = [];
+  selectPositionText.innerHTML = "select printers"
+  clearDebugCanvas();
 }
+
+
+// var blob = snapshot();
+// saveBlob(blob);
+// // togglePanel();  // bring snap to front
 
 function saveBlob(blob) {
   saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");

@@ -16,7 +16,7 @@
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script src="js-libraries/math.min.js"></script>
   <script src="js-libraries/FileSaver/FileSaver.js"></script>
-  <script src="js-libraries/FileSaver/canvas-toBlob.js"></script>
+  <script src="js-libraries/FileSaver/FileSaver.js"></script>
   <script src="js-libraries/FileSaver/Blob.js"></script>
 
   <!-- load project code -->
@@ -65,50 +65,20 @@
           </div>
           <div class="form-group">
             <label for="Box Size">Box Size: </label>
-            <select class="form-control" id="sizeOfBoxSelector">
-              <option>30</option>
+            <select class="form-control" onChange="sizeOfBox(this.value)" id="sizeOfBoxSelector">
               <option>40</option>
               <option>50</option>
               <option>60</option>
+              <option>70</option>
+              <option>80</option>
+              <option>90</option>
             </select>
           </div>
-          <button type="button" class="btn btn-default" id="selectPositionsButton">Select Positions</button>
+          <button type="button" class="btn btn-primary" id="selectPositionsButton">Select Positions</button>
           <button type="button" class="btn btn-danger" id="resetPositionsButton">Reset</button>
           <div class="form-group">
             <p class="navbar-text" id="selectPositionText">Selecting printers..</p>
           </div>
-        </form>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Canvas windows -->
-  <div class="row">
-    <div class="panel panel-success" id="webcamPanel">
-      <div class="panel-heading">
-        <h3 class="panel-title">Webcam</h3>
-      </div>
-      <div class="panel-body">
-        <div id="webcamDiv" style="width:640px; height:480px;"></div>
-      </div>
-    </div>
-    <div class="panel panel-info" id="debugPanel">
-      <div class="panel-heading">
-        <h3 class="panel-title">Canvas</h3>
-      </div>
-      <div class="panel-body">
-        <canvas class="input" id="debugCanvas" width="640" height="480"/>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- bottom navbar -->
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <!-- collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-navbar-collapse">
-        <form class="navbar-form navbar-left">
 
           <div class="btn-group" role="group" id="action-group" aria-label="control_label">
             <button type="button" class="btn btn-default" id="startRecordingButton">Start Recording</button>
@@ -122,11 +92,18 @@
           <div class="form-group">
             <p class="navbar-text" id="lastSnapTimeText">Last snap: </p>
           </div>
-        </form>
 
+        </form>
       </div>
     </div>
   </nav>
+
+  <!-- stack the webcam outputs -->
+  <div class="outer">
+    <div class="inner" id="webcamDiv" style="width:640px; height:480px;"></div>
+    <canvas class="inner" id="debugCanvas" width="640" height="480" style="border:2px solid #555555;"></canvas>
+</div>
+
 
 
 
