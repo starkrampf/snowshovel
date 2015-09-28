@@ -3,20 +3,24 @@
 
 ///// these work /////
 // VGA
+// 640 x 480
+// 800 x 600
 // 1280 x 960
 // 1440 x 1080  <-- native?
 // 1600 x 1200
 // 2048 x 1536
 var previewWidth = 640;
 var previewHeight = 480;
-var outputWidth = 800;
-var outputHeight = 600;
+var outputWidth = 1440;
+var outputHeight = 1080;
 var timerMillis = 1000;
 var timer_is_on = 0;
+var t;
 
 var data;
 var webcamDiv;
 var debugCanvas, debugContext;
+var testCanvas, testContext;
 var coordinateList = [];
 
 var numberOfPrintersSelector;
@@ -37,17 +41,21 @@ function initialize() {
     webcamDiv = document.getElementById('webcamDiv');
     debugCanvas = document.getElementById('debugCanvas');
     debugContext = debugCanvas.getContext("2d");
+    testCanvas = document.getElementById('testCanvas');
+    testContext = testCanvas.getContext("2d");
 
     webcamDiv.width = previewWidth;
     webcamDiv.height = previewHeight;
     debugCanvas.width = previewWidth;
     debugCanvas.height = previewHeight;
+    testCanvas.width = outputWidth;
+    testCanvas.height = outputHeight;
 
     Webcam.set({
         width: previewWidth,
         height: previewHeight,
-        dest_width: previewWidth,
-        dest_height: previewHeight,
+        dest_width: outputWidth,
+        dest_height: outputHeight,
         image_format: 'png',
         jpeg_quality: 100,
         force_flash: false
@@ -173,6 +181,7 @@ function timedCount() {
 function startRecording() {
     $('#startRecordingButton').prop('disabled', true);
     $('#stopRecordingButton').prop('disabled', false);
+    recordingIndicatorText.innerHTML = "RECORDING";
     if (!timer_is_on) {
         timer_is_on = 1;
         timedCount();
@@ -188,21 +197,18 @@ function stopRecording() {
 // take snapshot and do stuff with it!
 function snapshot() {
 
-    // Webcam.snap( function(data_uri, canvas, context) {
-    //         // copy image to my own canvas
-    //         debugContext.drawImage( context, 0, 0 );
-    //     } );
+    Webcam.snap( function(data_uri, canvas, context) {
+        // copy image to my own canvas
+        testContext.drawImage( canvas, 0, 0 );
+    } );
 
-    // Webcam.snap( function(data_uri) {
-    //         document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
-    //     } );
 
-    // // get data and extract raw pixels
-    // Webcam.snap( function() {}, debugCanvas );
-    // // imageContext = imageCanvas.getContext('2d');
-    // // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
-    // // processData(data);
-    //
+    // get data and extract raw pixels
+    // Webcam.snap( function() {}, testCanvas );
+    // imageContext = imageCanvas.getContext('2d');
+    // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
+    // processData(data);
+
     // debugContext = debugCanvas.getContext("2d");
     // // draw to canvas...
     // var blobOut;
@@ -212,7 +218,7 @@ function snapshot() {
 
     // return blobOut;
 
-    recordingIndicatorText.innerHTML = "RECORDING";
+    // saveCanvas(testCanvas);
 
 }
 
@@ -223,8 +229,10 @@ function snapshot() {
 // saveBlob(blob);
 // // togglePanel();  // bring snap to front
 
-function saveBlob(blob) {
-    saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
+function saveCanvas(canvas) {
+    canvas.toBlob(function(blob) {
+        saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
+    })
 }
 
 
