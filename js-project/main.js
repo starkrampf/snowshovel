@@ -21,7 +21,6 @@ var t;
 var data;
 var webcamDiv;
 var debugCanvas, debugContext;
-var testCanvas, testContext;
 var coordinateList = [];
 
 var numberOfPrintersSelector;
@@ -42,15 +41,11 @@ function initialize() {
     webcamDiv = document.getElementById('webcamDiv');
     debugCanvas = document.getElementById('debugCanvas');
     debugContext = debugCanvas.getContext("2d");
-    testCanvas = document.getElementById('testCanvas');
-    testContext = testCanvas.getContext("2d");
 
     webcamDiv.width = previewWidth;
     webcamDiv.height = previewHeight;
     debugCanvas.width = previewWidth;
     debugCanvas.height = previewHeight;
-    // testCanvas.width = outputWidth;
-    // testCanvas.height = outputHeight;
 
     Webcam.set({
         width: previewWidth,
