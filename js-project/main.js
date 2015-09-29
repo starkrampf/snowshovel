@@ -1,5 +1,4 @@
 
-// globals
 
 ///// these work /////
 // VGA
@@ -13,6 +12,8 @@ var previewWidth = 640;
 var previewHeight = 480;
 var outputWidth = 1440;
 var outputHeight = 1080;
+var scale_x = outputWidth / previewWidth;
+var scale_y = outputHeight / previewHeight;
 var timerMillis = 1000;
 var timer_is_on = 0;
 var t;
@@ -197,73 +198,42 @@ function stopRecording() {
 // take snapshot and do stuff with it!
 function snapshot() {
 
-    Webcam.snap( function(data_uri, canvas, context) {
-        // copy image to my own canvas
+    var canvasSnap;
+    var contextSnap;
+
+    Webcam.snap( function(data_uri, canvas, context) { //////////// COULD TRY TO MOVE TO OTHER METHOD, WITHOUT URI
+        // copy image to my own canvas for testing  FOR TESTING, REMOVE AFTER
         testContext.drawImage( canvas, 0, 0 );
+        contextSnap = context;
+    } );
 
-        var newCanvas = document.createElement("canvas");
 
-        // cropped image data
-        box_x = 100;
-        box_y = 100;
-        box_w = 200;
-        box_h = 150;
-        var imageData = context.getImageData(box_x, box_y, box_w, box_h);
+    // save time stamp for all images
+    var timestamp = Math.floor((new Date()).getTime() / 1000);
+
+    // loop through all coordinates
+    for (var i = 0; i < coordinateList.length; i++) {
+        // crop image data and save
+        var box_x = Math.round((coordinateList[i].x - sizeOfBoxSelector.value/2) * scale_x);
+        var box_y = Math.round((coordinateList[i].y - sizeOfBoxSelector.value/2) * scale_y);
+        var box_w = Math.round(sizeOfBoxSelector.value * scale_x);
+        var box_h = Math.round(sizeOfBoxSelector.value * scale_y);
+        var imageData = contextSnap.getImageData(box_x, box_y, box_w, box_h);
         var buffer = document.createElement('canvas');
         var bufferCtx = buffer.getContext("2d");
         buffer.width = box_w;
         buffer.height = box_h;
         bufferCtx.putImageData(imageData, 0, 0);
 
-        // var ctx = canvas.getContext("2d");
-        // var myImageData = ctx.getImageData(box.x, box.y, box.w, box.h);
-        // var buffer = document.createElement('canvas');
-        // var bufferCtx = buffer.getContext("2d");
-        // buffer.width = box.w;
-        // buffer.height = box.h;
-        // bufferCtx.putImageData(myImageData, 0, 0);
-
-
-        saveCanvas(buffer);
-    } );
-
-
-
-    // get data and extract raw pixels
-    // Webcam.snap( function() {}, testCanvas );
-    // imageContext = imageCanvas.getContext('2d');
-    // data = imageContext.getImageData(0,0,imageCanvas.width,imageCanvas.height);
-    // processData(data);
-
-    // debugContext = debugCanvas.getContext("2d");
-    // // draw to canvas...
-    // var blobOut;
-    // debugCanvas.toBlob(function(blob) {
-    //   blobOut = blob;
-    // });
-
-    // return blobOut;
-
-    // saveCanvas(testCanvas);
-
-}
-
-// var blob = snapshot();
-// saveBlob(blob);
-// // togglePanel();  // bring snap to front
-
-function saveCanvas(canvas) {
-    canvas.toBlob(function(blob) {
-        saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
-    })
-}
-
-
-function getPixel(data,x,y) {
-    if(x<0 || x>=data.width || y<0 || y>=data.height) {
-        return({r:0, g:0, b:0, a:0});
-    } else {
-        var index = (y*data.width+x)*4;
-        return({r:data.data[index+0], g:data.data[index+1], b:data.data[index+2], a:data.data[index+3]});
+        filename = timestamp + "_printer_" + (i+1) + ".png";
+        saveCanvas(buffer, filename);
     }
+
+
+}
+
+function saveCanvas(canvas, name) {
+    canvas.toBlob(function(blob) {
+        saveAs(blob, name);
+    })
 }
