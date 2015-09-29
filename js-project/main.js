@@ -76,6 +76,20 @@ function initialize() {
 
 }
 
+function addInputField(num) {
+    var container = document.getElementById('inputFieldContainer');
+    if (num === 1) {
+        container.innerHTML = '<div class="form-group"><label>Firmware version:</label></div>';
+    }
+    container.innerHTML += ('<div class="form-group"><input id="in' + num +
+                            '" type="text" class="form-control" maxlength="10" placeholder="Printer ' +
+                            num + ' firmware"></div>');
+}
+
+function clearInputFieldContainer() {
+    document.getElementById('inputFieldContainer').innerHTML = "";
+}
+
 // hook up buttons
 document.getElementById("selectPositionsButton").addEventListener("click", function(){
     selectPositions();
@@ -122,6 +136,7 @@ function resetPositions() {
     selectPositionText.innerHTML = "select printers"
     recordingIndicatorText.innerHTML = "";
     clearDebugCanvas();
+    clearInputFieldContainer();
 
     stopRecording();
 }
@@ -155,6 +170,9 @@ function clickEvent(event) {
     debugContext.font="20px Verdana";
     debugContext.fillStyle="#FFFF66";
     debugContext.fillText(coordinateList.length,x-boxSize/2,y-boxSize/2-5);
+
+    // add input field for printer description
+    addInputField(coordinateList.length);
 
     // display info
     selectPositionText.innerHTML = "printers selected: " + coordinateList.length + "/" + numberOfPrintersSelector.value;
@@ -221,16 +239,22 @@ function snapshot() {
     var bufferCtx = buffer.getContext("2d");
 
     // loop through all coordinates
+    var printerDescription = "";
     for (var i = 0; i < numPrinters; i++) {
         // crop image data
         var box_x = Math.round((coordinateList[i].x - sizeOfBoxSelector.value/2) * scale_x);
         var box_y = Math.round((coordinateList[i].y - sizeOfBoxSelector.value/2) * scale_y);
         var imageData = contextSnap.getImageData(box_x, box_y, box_w, box_h);
-        bufferCtx.putImageData(imageData, i*box_w, 0);
+        bufferCtx.putImageData(imageData, i*box_w, 0); // stitch to image mosaic
+
+        // write filename with printer descriptions
+        var fieldValue = document.getElementById('in' + (i+1)).value;
+        if (fieldValue == "") fieldValue = "null";
+        printerDescription += ("_" + fieldValue);
     }
 
     // save data with unique filename
-    filename = timestamp + "_snap_" + numPrinters + ".png";
+    filename = timestamp + "_snap_" + numPrinters + printerDescription + ".png";
     saveCanvas(buffer, filename);
 
 }

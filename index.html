@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title>Snowshovel 0.1</title>
+  <title>Snowshovel 0.1.1</title>
 
   <!-- load stylesheets -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -95,15 +95,30 @@
   </nav>
 
 
-  <!-- stack the webcam outputs -->
+  <!-- stack the webcam outputs, left aligned -->
 <div class="outer">
   <div class="inner" id="webcamDiv" style="width:640px; height:480px;"></div>
   <canvas class="inner" id="debugCanvas"></canvas>
 </div>
 
-  <div class="right">
-      <!-- TODO TEXT INPUT STUFF HERE? -->
-  </div>
+<!-- input fields for filename, right aligned -->
+  <div class="right" id="inputFieldContainer">
+      <!-- <div class="form-group">
+          <label>Firmware version:</label>
+      </div>
+      <div class="form-group">
+          <input id="in1" type="text" class="form-control" maxlength="10" placeholder="Printer 1 firmware">
+      </div>
+      <div class="form-group">
+          <input type="text" class="form-control" maxlength="10" placeholder="Printer 2 firmware">
+      </div>
+      <div class="form-group">
+          <input type="text" class="form-control" maxlength="10" placeholder="Printer 3 firmware">
+      </div>
+      <div class="form-group">
+          <input type="text" class="form-control" maxlength="10" placeholder="Printer 4 firmware">
+      </div> -->
+</div>
 
   <!-- run the app -->
   <script src="js-project/main.js"></script>
