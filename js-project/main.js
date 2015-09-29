@@ -49,8 +49,8 @@ function initialize() {
     webcamDiv.height = previewHeight;
     debugCanvas.width = previewWidth;
     debugCanvas.height = previewHeight;
-    testCanvas.width = outputWidth;
-    testCanvas.height = outputHeight;
+    // testCanvas.width = outputWidth;
+    // testCanvas.height = outputHeight;
 
     Webcam.set({
         width: previewWidth,
@@ -203,7 +203,7 @@ function snapshot() {
 
     Webcam.snap( function(data_uri, canvas, context) { //////////// COULD TRY TO MOVE TO OTHER METHOD, WITHOUT URI
         // copy image to my own canvas for testing  FOR TESTING, REMOVE AFTER
-        testContext.drawImage( canvas, 0, 0 );
+        // testContext.drawImage( canvas, 0, 0 );
         contextSnap = context;
     } );
 
@@ -227,8 +227,9 @@ function snapshot() {
 
         filename = timestamp + "_printer_" + (i+1) + ".png";
         saveCanvas(buffer, filename);
-    }
 
+        ////////   PUT ALL IMAGE INTO IMAGE STRIP!!  //////////
+    }
 
 }
 
