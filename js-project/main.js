@@ -200,7 +200,33 @@ function snapshot() {
     Webcam.snap( function(data_uri, canvas, context) {
         // copy image to my own canvas
         testContext.drawImage( canvas, 0, 0 );
+
+        var newCanvas = document.createElement("canvas");
+
+        // cropped image data
+        box_x = 100;
+        box_y = 100;
+        box_w = 200;
+        box_h = 150;
+        var imageData = context.getImageData(box_x, box_y, box_w, box_h);
+        var buffer = document.createElement('canvas');
+        var bufferCtx = buffer.getContext("2d");
+        buffer.width = box_w;
+        buffer.height = box_h;
+        bufferCtx.putImageData(imageData, 0, 0);
+
+        // var ctx = canvas.getContext("2d");
+        // var myImageData = ctx.getImageData(box.x, box.y, box.w, box.h);
+        // var buffer = document.createElement('canvas');
+        // var bufferCtx = buffer.getContext("2d");
+        // buffer.width = box.w;
+        // buffer.height = box.h;
+        // bufferCtx.putImageData(myImageData, 0, 0);
+
+
+        saveCanvas(buffer);
     } );
+
 
 
     // get data and extract raw pixels
@@ -222,9 +248,6 @@ function snapshot() {
 
 }
 
-
-
-
 // var blob = snapshot();
 // saveBlob(blob);
 // // togglePanel();  // bring snap to front
@@ -234,8 +257,6 @@ function saveCanvas(canvas) {
         saveAs(blob, "image-" + Math.floor((new Date()).getTime() / 1000) + ".png");
     })
 }
-
-
 
 
 function getPixel(data,x,y) {
