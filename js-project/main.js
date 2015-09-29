@@ -14,7 +14,7 @@ var outputWidth = 1440;
 var outputHeight = 1080;
 var scale_x = outputWidth / previewWidth;
 var scale_y = outputHeight / previewHeight;
-var timerMillis = 1000;
+var timerMillis = 5000;
 var timer_is_on = 0;
 var t;
 
@@ -94,6 +94,7 @@ document.getElementById("startRecordingButton").addEventListener("click", functi
     startRecording();
 });
 
+/////// TODO  Stop recording doesnt reset.. merely stops so you can reposition and then restart again.. without coordinate loss
 document.getElementById("stopRecordingButton").addEventListener("click", function(){
     resetPositions();
 });
@@ -144,6 +145,9 @@ function clickEvent(event) {
     x -= debugCanvas.offsetLeft;
     y -= debugCanvas.offsetTop;
 
+    // save coordinate in global list
+    coordinateList.push({x:x, y:y});
+
     // draw rectangle
     var boxSize = sizeOfBoxSelector.value;
     debugContext.beginPath();
@@ -152,8 +156,10 @@ function clickEvent(event) {
     debugContext.rect(x-boxSize/2, y-boxSize/2, boxSize, boxSize);
     debugContext.stroke();
 
-    // save coordinate in global list
-    coordinateList.push({x:x, y:y});
+    // draw box number
+    debugContext.font="20px Verdana";
+    debugContext.fillStyle="#FFFF66";
+    debugContext.fillText(coordinateList.length,x-boxSize/2,y-boxSize/2-5);
 
     // display info
     selectPositionText.innerHTML = "printers selected: " + coordinateList.length + "/" + numberOfPrintersSelector.value;
@@ -198,38 +204,39 @@ function stopRecording() {
 // take snapshot and do stuff with it!
 function snapshot() {
 
-    var canvasSnap;
-    var contextSnap;
-
-    Webcam.snap( function(data_uri, canvas, context) { //////////// COULD TRY TO MOVE TO OTHER METHOD, WITHOUT URI
-        // copy image to my own canvas for testing  FOR TESTING, REMOVE AFTER
-        // testContext.drawImage( canvas, 0, 0 );
-        contextSnap = context;
-    } );
-
+    // number of printers monitored
+    var numPrinters = coordinateList.length;
 
     // save time stamp for all images
     var timestamp = Math.floor((new Date()).getTime() / 1000);
 
+    // create buffer canvas and for full image
+    var canvasSnap = document.createElement('canvas');
+    var contextSnap = canvasSnap.getContext("2d");
+    canvasSnap.width = outputWidth;
+    canvasSnap.height = outputHeight;
+    Webcam.snap( function() {}, canvasSnap );
+
+    // create buffer canvas strip to hold cropped images
+    var box_w = Math.round(sizeOfBoxSelector.value * scale_x);
+    var box_h = Math.round(sizeOfBoxSelector.value * scale_y);
+    var buffer = document.createElement('canvas');
+    buffer.width = box_w * numPrinters;  // stack cropped images sideways
+    buffer.height = box_h;
+    var bufferCtx = buffer.getContext("2d");
+
     // loop through all coordinates
-    for (var i = 0; i < coordinateList.length; i++) {
-        // crop image data and save
+    for (var i = 0; i < numPrinters; i++) {
+        // crop image data
         var box_x = Math.round((coordinateList[i].x - sizeOfBoxSelector.value/2) * scale_x);
         var box_y = Math.round((coordinateList[i].y - sizeOfBoxSelector.value/2) * scale_y);
-        var box_w = Math.round(sizeOfBoxSelector.value * scale_x);
-        var box_h = Math.round(sizeOfBoxSelector.value * scale_y);
         var imageData = contextSnap.getImageData(box_x, box_y, box_w, box_h);
-        var buffer = document.createElement('canvas');
-        var bufferCtx = buffer.getContext("2d");
-        buffer.width = box_w;
-        buffer.height = box_h;
-        bufferCtx.putImageData(imageData, 0, 0);
-
-        filename = timestamp + "_printer_" + (i+1) + ".png";
-        saveCanvas(buffer, filename);
-
-        ////////   PUT ALL IMAGE INTO IMAGE STRIP!!  //////////
+        bufferCtx.putImageData(imageData, i*box_w, 0);
     }
+
+    // save data with unique filename
+    filename = timestamp + "_snap_" + numPrinters + ".png";
+    saveCanvas(buffer, filename);
 
 }
 
