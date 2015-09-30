@@ -18,15 +18,12 @@ var timerMillis = 5000;
 var timer_is_on = 0;
 var t;
 
-var data;
 var webcamDiv;
 var debugCanvas, debugContext;
 var coordinateList = [];
 
 var numberOfPrintersSelector;
 var sizeOfBoxSelector;
-var selectPositionsButton;
-var resetPositionsButton;
 var selectPositionText;
 
 var isBeingSelected = false;
